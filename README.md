@@ -18,10 +18,10 @@ Google Form → Google Sheet → Apps Script → `data/salsa_vault.csv` → GitH
 
 ## Google Form + Sheet flow
 
-1. Create a Google Form with fields: `title`, `youtube_url`, `category`, `tags`, `notes`.
+1. Create a Google Form with fields: `title`, `youtube_url`, `tags`, `notes`.
 2. Link form responses to a Google Sheet.
 3. Keep CSV column order:
-   `timestamp,title,youtube_url,category,tags,notes`
+   `timestamp,title,youtube_url,tags,notes`
 
 ## Apps Script idea (Sheet → Repo CSV)
 

@@ -31,7 +31,6 @@ const moves = (await getCollection('moves')).sort(
           <img src={`https://img.youtube.com/vi/${move.data.youtube_id}/hqdefault.jpg`} alt={move.data.title} loading="lazy" />
           <div class="body">
             <h3>{move.data.title}</h3>
-            <p>{move.data.category}</p>
             <p><span class="status">{move.data.status}</span></p>
             <div class="tags">
               {move.data.tags.map((tag) => <span class="tag">#{tag}</span>)}

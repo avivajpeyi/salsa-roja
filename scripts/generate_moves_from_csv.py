@@ -16,6 +16,15 @@ YOUTUBE_PATTERNS = [
     re.compile(r"(?:youtube\.com/shorts/)([A-Za-z0-9_-]{11})"),
 ]
 
+HEADER_ALIASES = {
+    "title": "title",
+    "youtube_url": "youtube_url",
+    "youtube link": "youtube_url",
+    "youtube_link": "youtube_url",
+    "tags": "tags",
+    "notes": "notes",
+}
+
 
 def extract_youtube_id(url: str) -> str | None:
     for pattern in YOUTUBE_PATTERNS:
@@ -31,6 +40,17 @@ def parse_tags(raw_tags: str) -> list[str]:
     return [tag.strip() for tag in raw_tags.split(",") if tag.strip()]
 
 
+def normalize_row(row: dict[str, str]) -> dict[str, str]:
+    normalized: dict[str, str] = {}
+
+    for key, value in row.items():
+        canonical_key = HEADER_ALIASES.get((key or "").strip().lower())
+        if canonical_key:
+            normalized[canonical_key] = (value or "").strip()
+
+    return normalized
+
+
 def to_markdown(row: dict[str, str], yt_id: str) -> str:
     tags = parse_tags(row.get("tags", ""))
     tags_block = "\n".join(f"  - {tag}" for tag in tags)
@@ -42,7 +62,6 @@ id: yt_{yt_id}
 youtube_id: {yt_id}
 youtube_url: {row.get('youtube_url', '').strip()}
 title: {row.get('title', '').strip()}
-category: {row.get('category', '').strip()}
 tags:
 {tags_block if tags_block else '  -'}
 status: new
@@ -70,8 +89,9 @@ def main() -> int:
 
     with CSV_PATH.open("r", encoding="utf-8", newline="") as f:
         reader = csv.DictReader(f)
-        for idx, row in enumerate(reader, start=2):
-            url = (row.get("youtube_url") or "").strip()
+        for idx, raw_row in enumerate(reader, start=2):
+            row = normalize_row(raw_row)
+            url = row.get("youtube_url", "")
             yt_id = extract_youtube_id(url)
             if not yt_id:
                 print(f"error line {idx}: invalid YouTube URL: {url}")

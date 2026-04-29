@@ -7,7 +7,6 @@ const moves = defineCollection({
     youtube_id: z.string(),
     youtube_url: z.string().url(),
     title: z.string(),
-    category: z.string(),
     tags: z.array(z.string()),
     status: z.enum(['new', 'reviewing', 'learned']).default('new'),
     date_added: z.coerce.date(),

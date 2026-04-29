@@ -28,7 +28,6 @@ const editUrl = `https://github.com/${Astro.site?.hostname || '<your-username>/<
     <h1>{move.data.title}</h1>
     <iframe src={`https://www.youtube.com/embed/${move.data.youtube_id}`} allowfullscreen title={move.data.title}></iframe>
     <div class="meta">
-      <span class="pill">{move.data.category}</span>
       {move.data.tags.map((tag) => <span class="pill">#{tag}</span>)}
     </div>
     <Content />
