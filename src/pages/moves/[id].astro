@@ -1,0 +1,37 @@
+---
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const moves = await getCollection('moves');
+  return moves.map((move) => ({ params: { id: move.data.id }, props: { move } }));
+}
+
+const { move } = Astro.props;
+const { Content } = await render(move);
+const editUrl = `https://github.com/${Astro.site?.hostname || '<your-username>/<your-repo>'}/edit/main/src/content/moves/${move.id}`;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{move.data.title} · Salsa Roja</title>
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 800px; margin: 0 auto; padding: 1rem; }
+      iframe { width: 100%; aspect-ratio: 16/9; border: 0; }
+      .meta { display:flex; gap:.5rem; flex-wrap:wrap; }
+      .pill { background:#f1f1f1; border-radius:999px; padding:.2rem .55rem; font-size:.85rem; }
+    </style>
+  </head>
+  <body>
+    <a href="/">← Back</a>
+    <h1>{move.data.title}</h1>
+    <iframe src={`https://www.youtube.com/embed/${move.data.youtube_id}`} allowfullscreen title={move.data.title}></iframe>
+    <div class="meta">
+      <span class="pill">{move.data.category}</span>
+      {move.data.tags.map((tag) => <span class="pill">#{tag}</span>)}
+    </div>
+    <Content />
+    <p><a href={editUrl}>Edit this page on GitHub</a></p>
+  </body>
+</html>
