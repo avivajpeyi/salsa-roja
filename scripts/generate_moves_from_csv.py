@@ -51,6 +51,11 @@ def normalize_row(row: dict[str, str]) -> dict[str, str]:
     return normalized
 
 
+def yaml_quote(value: str) -> str:
+    escaped = (value or "").replace("\\", "\\\\").replace('"', '\\"')
+    return f'"{escaped}"'
+
+
 def to_markdown(row: dict[str, str], yt_id: str) -> str:
     tags = parse_tags(row.get("tags", ""))
     tags_block = "\n".join(f"  - {tag}" for tag in tags)
@@ -60,8 +65,8 @@ def to_markdown(row: dict[str, str], yt_id: str) -> str:
     return f"""---
 id: yt_{yt_id}
 youtube_id: {yt_id}
-youtube_url: {row.get('youtube_url', '').strip()}
-title: {row.get('title', '').strip()}
+youtube_url: {yaml_quote(row.get('youtube_url', '').strip())}
+title: {yaml_quote(row.get('title', '').strip())}
 tags:
 {tags_block if tags_block else '  -'}
 status: new
