@@ -1,0 +1,54 @@
+---
+import { getCollection } from 'astro:content';
+
+const moves = (await getCollection('moves')).sort(
+  (a, b) => b.data.date_added.getTime() - a.data.date_added.getTime(),
+);
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Salsa Roja</title>
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 860px; margin: 0 auto; padding: 1rem; }
+      input { width: 100%; padding: .75rem; margin-bottom: 1rem; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(250px,1fr)); gap: 1rem; }
+      .card { border: 1px solid #ddd; border-radius: 12px; overflow: hidden; text-decoration:none; color: inherit; }
+      .card img { width: 100%; display:block; }
+      .card .body { padding: .75rem; }
+      .tags { display:flex; flex-wrap:wrap; gap:.35rem; }
+      .tag,.status { background:#f1f1f1; border-radius:999px; padding:.15rem .5rem; font-size:.8rem; }
+    </style>
+  </head>
+  <body>
+    <h1>Salsa Roja</h1>
+    <input id="search" placeholder="Search by title or tags" />
+    <div class="grid" id="move-grid">
+      {moves.map((move) => (
+        <a class="card" href={`/moves/${move.data.id}`} data-search={`${move.data.title} ${move.data.tags.join(' ')}`.toLowerCase()}>
+          <img src={`https://img.youtube.com/vi/${move.data.youtube_id}/hqdefault.jpg`} alt={move.data.title} loading="lazy" />
+          <div class="body">
+            <h3>{move.data.title}</h3>
+            <p>{move.data.category}</p>
+            <p><span class="status">{move.data.status}</span></p>
+            <div class="tags">
+              {move.data.tags.map((tag) => <span class="tag">#{tag}</span>)}
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+    <script>
+      const input = document.getElementById('search');
+      const cards = Array.from(document.querySelectorAll('.card'));
+      input?.addEventListener('input', () => {
+        const q = input.value.toLowerCase().trim();
+        cards.forEach((card) => {
+          card.style.display = card.dataset.search?.includes(q) ? '' : 'none';
+        });
+      });
+    </script>
+  </body>
+</html>
