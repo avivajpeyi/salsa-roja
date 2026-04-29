@@ -45,11 +45,6 @@ jobs:
         with:
           package-manager: npm
 
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dist
-
   deploy:
     environment:
       name: github-pages
