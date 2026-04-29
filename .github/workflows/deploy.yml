@@ -1,0 +1,61 @@
+name: Deploy Salsa Roja
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate markdown from CSV
+        run: python scripts/generate_moves_from_csv.py
+
+      - name: Commit generated markdown (if any)
+        run: |
+          if [ -n "$(git status --porcelain src/content/moves)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add src/content/moves
+            git commit -m "chore: generate move markdown from CSV [skip ci]"
+            git push
+          else
+            echo "No new markdown files to commit"
+          fi
+
+      - uses: withastro/action@v3
+        with:
+          package-manager: npm
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
