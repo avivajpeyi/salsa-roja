@@ -2,7 +2,7 @@
 id: yt_7b9FbjqB0Vk
 youtube_id: 7b9FbjqB0Vk
 youtube_url: https://youtube.com/shorts/7b9FbjqB0Vk
-title: 04/18/26 Teo Level 4 combo
+title: 18/04/26 Teo Level 4 combo
 tags:
   - partnerwork
   - combo
