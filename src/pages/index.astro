@@ -4,6 +4,7 @@ import { getCollection } from 'astro:content';
 const moves = (await getCollection('moves')).sort(
   (a, b) => b.data.date_added.getTime() - a.data.date_added.getTime(),
 );
+const baseUrl = import.meta.env.BASE_URL;
 ---
 
 <html lang="en">
@@ -27,7 +28,7 @@ const moves = (await getCollection('moves')).sort(
     <input id="search" placeholder="Search by title or tags" />
     <div class="grid" id="move-grid">
       {moves.map((move) => (
-        <a class="card" href={`/moves/${move.data.id}`} data-search={`${move.data.title} ${move.data.tags.join(' ')}`.toLowerCase()}>
+        <a class="card" href={`${baseUrl}moves/${move.data.id}`} data-search={`${move.data.title} ${move.data.tags.join(' ')}`.toLowerCase()}>
           <img src={`https://img.youtube.com/vi/${move.data.youtube_id}/hqdefault.jpg`} alt={move.data.title} loading="lazy" />
           <div class="body">
             <h3>{move.data.title}</h3>

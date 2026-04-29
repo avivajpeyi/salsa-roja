@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://example.github.io/salsa-roja',
+  site: 'https://avivajpeyi.github.io',
+  base: '/salsa-roja',
   output: 'static',
 });
