@@ -62,13 +62,14 @@ def to_markdown(row: dict[str, str], yt_id: str) -> str:
     notes = (row.get("notes") or "").strip()
     today = date.today().isoformat()
 
+    tags_yaml = f"tags:\n{tags_block}" if tags_block else "tags: []"
+
     return f"""---
 id: yt_{yt_id}
 youtube_id: {yt_id}
 youtube_url: {yaml_quote(row.get('youtube_url', '').strip())}
 title: {yaml_quote(row.get('title', '').strip())}
-tags:
-{tags_block if tags_block else '  -'}
+{tags_yaml}
 status: new
 date_added: {today}
 ---
